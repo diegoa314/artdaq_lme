@@ -1,0 +1,63 @@
+# FHiCL document used to run the "driver" executable. To learn more
+#  about the FHiCL language, please look at
+#  cdcvs.fnal.gov/redmine/documents/327 , the "FHiCL Quick Start Guide"
+
+
+######################################################################
+# The ART code
+######################################################################
+
+physics:
+{
+  analyzers:
+  {
+
+    printBuildInfo: {
+    module_type: PrintBuildInfo
+
+        buildinfo_module_label: artdaqDemoBuildInfo
+        buildinfo_instance_label: myInstanceName
+     }
+
+    toyDump:
+    {
+      module_type: ToyDump
+      raw_data_label: daq
+      frag_type: TOY1
+      num_adcs_to_show: 0
+    }
+  }
+
+  producers:
+  {
+
+  }   
+
+  a1: [ printBuildInfo ]
+  a2: [ toyDump]
+  e1: [ out1 ]
+  end_paths: [ e1,a1,a2 ]
+}
+
+outputs:
+{
+  out1:
+  {
+    module_type: FileDumperOutput
+    wantProductFriendlyClassName: true
+    onlyIfPresent: true
+  }
+
+
+}
+
+source:
+{
+module_type: RootInput
+fileNames: [ "driver.root" ]
+}
+
+process_name: readRoot
+
+
+

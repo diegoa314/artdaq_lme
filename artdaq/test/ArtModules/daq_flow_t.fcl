@@ -1,0 +1,53 @@
+BEGIN_PROLOG
+num_ds50_boards: 5
+num_events: 100
+END_PROLOG
+
+process_name: dftest
+
+source:
+{
+  module_type: RawInput
+  waiting_time: 30.0 # waiting time, in seconds, for queue timeout
+  resume_after_timeout: false
+  buffer_count: 10
+  max_event_size_bytes: 0x100000
+}
+
+physics:
+{
+  analyzers:
+  {
+    frags:
+    {
+      module_type: FragmentSniffer
+      raw_label: "daq"
+      product_instance_name: "Data"
+      num_frags_per_event: @local::num_ds50_boards
+      num_events_expected: @local::num_events
+    }
+  }
+
+  validate: [ frags ]
+  end_paths: [ validate ]
+}
+
+services:
+{
+  scheduler:
+  {
+    Rethrow: ['OtherArt','StdException','Unknown','BadAlloc',
+              'BadExceptionType','ProductNotFound','DictionaryNotFound',
+              'InsertFailure','Configuration','LogicError','UnimplementedFeature',
+              'InvalidReference','NullPointerError','NoProductSpecified','EventTimeout',
+              'DataCorruption','ScheduleExecutionFailure','EventProcessorFailure',
+              'FileInPathError','FileOpenError','FileReadError','FatalRootError',
+              'MismatchedInputFiles','ProductDoesNotSupportViews',
+              'ProductDoesNotSupportPtr','NotFound']
+#    wantSummary: true
+    wantTracer: true
+    handleEmptyRuns: true
+    handleEmptySubRuns: true
+    enableSigInt: true
+  }
+}

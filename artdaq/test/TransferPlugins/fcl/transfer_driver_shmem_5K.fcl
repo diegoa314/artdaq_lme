@@ -1,0 +1,7 @@
+num_senders: 1
+num_receivers: 1
+sends_per_sender: 1000000
+buffer_count: 10
+fragment_size: 5120
+transfer_plugin_type: Shmem
+partition_number: 6

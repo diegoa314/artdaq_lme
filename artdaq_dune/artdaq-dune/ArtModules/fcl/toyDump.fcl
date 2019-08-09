@@ -1,0 +1,46 @@
+physics:
+{
+  analyzers:
+  {
+    evtDump:
+    {
+      module_type: ToyDump
+
+	  # The maximum number of ADC values to print to screen. -1 to disable printing to screen, 0 for "all"
+      num_adcs_to_print: 10
+	  # The maximum number of ADC values to write to output file. -1 to disable, 0 for "all"
+	  num_adcs_to_write: 0
+	  # The number of ADC values to print per line
+	  columns_to_display_on_screen: 10
+	  # The output file name
+	  output_file_name: "out.bin"
+    }
+
+    printBuildInfo: {
+      module_type: PrintBuildInfo
+      buildinfo_module_label: BuildInfo
+      buildinfo_instance_label: ArtdaqDemo
+    }
+  }
+
+  a1: [ evtDump, printBuildInfo ]
+  e1: [ out1 ]
+  end_paths: [ a1, e1 ]
+}
+
+outputs:
+{
+  out1:
+  {
+    module_type: FileDumperOutput
+    wantProductFriendlyClassName: true
+  }
+}
+
+source:
+{
+  module_type: RootInput
+  fileNames: [ "/tmp/artdaqdemo_eb00_20130501000000.root" ]
+}
+
+process_name: TOYDUMP

@@ -1,0 +1,35 @@
+genToArt:
+{
+  run_number: 10
+  events_to_generate: 5
+  fragment_receivers:
+  [
+    {
+      generator: GenericFragmentSimulator
+      content_selection: 3 
+   }
+  ]
+
+  event_builder:
+  {
+    event_queue_wait_time: 5.0
+    print_event_store_stats: false
+	buffer_count: 10
+	expected_fragments_per_event: 1
+	max_event_size_bytes: 0x100000
+  }
+}
+
+process_name: TEST
+
+source:
+{
+  module_type: RawInput
+  waiting_time: 25.0
+}
+
+physics: {
+  analyzers: {}
+  producers: {}
+  filters: { }
+}

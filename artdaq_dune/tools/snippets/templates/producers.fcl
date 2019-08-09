@@ -1,0 +1,9 @@
+BuildInfo_t:{
+       module_type: ArtdaqDemoBuildInfo
+       instance_name: ArtdaqDemo
+}
+
+producers_t: {
+     # Decompression functionality can also be added...
+  BuildInfo: {@table::BuildInfo_t}
+}

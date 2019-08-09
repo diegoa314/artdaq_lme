@@ -1,0 +1,29 @@
+#
+# This FHiCL file is intented to simply print out the software versions that were
+# used in the DAQ system when the file was written.
+#
+# usage: 'art -c <pathToThisFile>/printBuildInfo.fcl -n 1 <filename>'
+#
+
+physics:
+{
+  analyzers:
+  {
+    printBuildInfo:
+    {
+      module_type: PrintBuildInfo
+      buildinfo_module_label: BuildInfo
+      buildinfo_instance_label: ArtdaqDemo
+    }
+  }
+
+  a1: [ printBuildInfo ]
+}
+
+source:
+{
+  module_type: RootInput
+  fileNames: [ "/tmp/artdaqdemo.root" ]
+}
+
+process_name: PRINTBUILDINFO

@@ -1,0 +1,4 @@
+id: 3000
+commanderPluginType: xmlrpc
+partition_number: 20
+server_url: "localhost"

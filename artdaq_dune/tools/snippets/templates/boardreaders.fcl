@@ -1,0 +1,38 @@
+BEGIN_PROLOG
+
+#include "templates/defaults.fcl"
+#include "templates/metrics.fcl"
+
+fragment_receiver_t: {
+    mpi_buffer_count: @local::defaults.mpi_buffer_count
+
+    mpi_sync_interval: 50
+    
+    first_event_builder_rank: 2
+    event_builder_count: 2
+
+    generator: ToySimulator
+    
+    fragment_type: TOY1
+    fragment_id: 0
+    board_id: 0
+    random_seed: 6752
+    
+    sleep_on_stop_us: 500000 
+    nADCcounts: 40
+    throttle_usecs: 100000
+}
+
+daq_boardreader_t: { 
+  max_fragment_size_words: @local::defaults.max_fragment_size_words
+
+  fragment_receiver: { @table::fragment_receiver_t }
+
+  metrics: {  
+      brFile : {
+	@table::filemetric_t 
+	fileName: "/tmp/boardreader/br_%UID%_metrics.log"
+	}
+      }
+}
+END_PROLOG

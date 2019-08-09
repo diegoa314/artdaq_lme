@@ -1,0 +1,79 @@
+# This file describes the configuration Parameters accepted by SharedMemoryEventManager. All values given are defauls. Required Parameters are commented
+
+#
+# Parameters used to configure Shared Memory
+#
+
+
+# (Default 0xBEE70000 + PID): Key to use for shared memory access
+#shared_memory_key 
+
+# Number of events in the Shared Memory (incomplete + pending art)
+#buffer_count
+
+# Maximum event size (all Fragments), in bytes (only specify one of max_fragment_size_bytes OR max_event_size_bytes)
+#max_event_size_bytes 
+ 
+# Maximum Fragment size, in bytes (only specify one of max_fragment_size_bytes OR max_event_size_bytes)
+#max_fragment_size_bytes
+
+# Number of Fragments to expect per event
+#expected_fragments_per_event
+
+#
+# DAQ Parameters
+#
+
+# (Default: event_queue_wait_time * 1,000,000): Maximum amount of time elapsed before a buffer is marked as abandoned. Time is reset each time an operation is performed on the buffer.
+#stale_buffer_timeout_usec
+
+# Amount of time (in seconds) an event can exist in shared memory before being released to art. Used as input to default parameter of "stale_buffer_timeout_usec".
+event_queue_wait_time: 5 
+
+# When true, buffers are not marked Empty when read, but return to Full state. Buffers are overwritten in order received.
+broadcast_mode: false
+
+# Number of art procceses to start
+art_analyzer_count: 1
+
+# Whether the run and subrun ID of an event should be updated whenever a Fragment is added.
+update_run_ids_on_new_fragment: true
+
+# Whether to start and manage art threads (Sets art_analyzer count to 0 and overwrite_mode to true when false)
+use_art: true
+
+# Whether new data is allowed to overwrite buffers in the "Full" state
+overwite_mode: false
+
+# Whether Init Fragments are expected to be sent to art. If true, a Warning message is printed when an Init Fragment is requested but none are available.
+send_init_fragments: true 
+
+# Interval at which an incomplete event report should be written (-1 to disable)
+incomplete_event_report_interval_ms: -1
+
+# Amount of time that an art process should run to not be considered "DOA"
+minimum_art_lifetime_s: 2.0
+
+# Amount of time with no reads to wait before sending EndOfData message (0 to wait as long as there are outstanding buffers and live art processes)
+end_of_data_wait_s: 1.0
+
+# Amount of time to wait for art processes to pick up and process EndOfData message before moving on to shutdown phase
+end_of_data_graceful_shutdown_us: 1000000
+		 
+		 
+#
+#  Broadcast Shared Memory Parameters
+#  A "Broadcast shared memory segment" is used for all system-level fragments, such as Init, Start/End Run, Start/End Subrun and EndOfData
+#
+
+# Amount of time broadcast fragments should live in the broadcast shared memory segment
+fragment_broadcast_timeout_ms: 3000 
+
+# (Default: 0xCEE7000 + PID): Key to use for broadcast shared memory access
+# broadcast_shared_memory_key
+
+# Number of Buffers in the broadcast shared memory segment
+broadcast_buffer_count: 10 
+
+# Size of the buffers in the broadcast shared memory segment
+broadcast_buffer_size: 0x100000 

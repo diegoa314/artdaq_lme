@@ -1,0 +1,4 @@
+#include "RoutingMasterPolicy.fcl"
+policy: "NthEvent"
+# nth_event: # REQUIRED, no default! Redirect every nth events
+# target_event_builder: # REQUIRED, no default! This EventBuilder will be removed from event_builder_ranks (But must be specified there!) and will instead only receive every nth event.

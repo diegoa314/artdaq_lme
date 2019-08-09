@@ -1,0 +1,40 @@
+#
+# 28-Aug-2018, KAB, WRK: This FHiCL file is intented to help with diagnosing
+# problems in raw data files by using the MissingDataCheck module to look for
+# missing, empty, broken, etc. fragments. This config file requests only the
+# summary of the problems that were found by the MissingDataCheck module.
+#
+# usage: 'art -c <pathToThisFile>/missingDataCheck.fcl <filename>'
+#
+
+services:
+{
+  TFileService: { fileName: "MissingDataCheck.root" }
+}
+
+physics:
+{
+  analyzers:
+  {
+    missingdata:
+    {
+      module_type: MissingDataCheck
+      raw_data_label: daq
+
+      # verbosity level 1 is simple summary
+      # verbosity level 2 is summary with list of  bad events
+      # verbosity level 3 is full summary with event-by-event information
+      verbosity: 1
+    }
+  }
+
+  a1: [ missingdata ]
+}
+
+source:
+{
+  module_type: RootInput
+  fileNames: [ "/tmp/artdaqdemo.root" ]
+}
+
+process_name: MISSINGDATACHECK

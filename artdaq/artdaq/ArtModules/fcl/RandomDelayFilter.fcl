@@ -1,0 +1,28 @@
+
+randomDelay: {
+	# Configuration for the RandomDelayFilter_module
+    module_type: RandomDelayFilter
+
+	# For Uniform Distribution, the minimum delay to generate. For Fixed distribution, this value will be used for all delays. For all other distributions, the minimum delay is used as an offset for the generated value.
+    minimum_delay_ms: 0
+	# For Uniform Distribution, the maximum delay to generate
+    maximum_delay_ms: 1000
+
+	# For Normal or Exponential distribution, the mean value of the distribution
+    mean_delay_ms: 500
+
+	# For Normal Distribution, the sigma of the normal curve
+    sigma_delay_ms: 100
+
+	# Distribution type to use: Fixed, Uniform, Normal, or Exponential (currently)
+	delay_distribution_type: "Uniform" # Note that only first letter is currently used (case-insensitive)
+
+	# Should be 0-100. Filter will pass randomly-selected events at the % level specified here
+    pass_filter_percentage: 100
+
+	# In the range 0.0 to 1.0. This ratio is the time the filter will delay by CPU load versus delay time by usleep calls
+	cpu_load_ratio: 1.0 
+
+	# The seed used for the random number generator used by both the time distributions and the pass/fail distribution
+	random_seed: 271828 
+}

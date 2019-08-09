@@ -1,0 +1,17 @@
+num_senders: 1
+num_receivers: 1
+sends_per_sender: 1000
+buffer_count: 10
+fragment_size: 0x1000
+transfer_plugin_type: TCPSocket
+validate_data_mode: true
+partition_number: 14
+
+hostmap: [
+{rank: 0 host: localhost portOffset: 6300 },
+{rank: 1 host: localhost portOffset: 6310 },
+{rank: 2 host: localhost portOffset: 6320 },
+{rank: 3 host: localhost portOffset: 6330 },
+{rank: 4 host: localhost portOffset: 6340 },
+{rank: 5 host: localhost portOffset: 6350 }
+]

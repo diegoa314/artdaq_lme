@@ -1,0 +1,133 @@
+// The following block is pasted into the generated state machine
+// code. Be careful, because this is likely to make what you write
+// language-specific.
+%{
+
+%}
+
+%class Commandable
+%package artdaq
+%header artdaq/Application/Commandable.hh
+
+// compilation and diagram hints:
+// java -jar $SMC_HOME/bin/Smc.jar -c++ Commandable.sm
+// java -jar $SMC_HOME/bin/Smc.jar -graph -glevel 2 Commandable.sm
+// dot -Tpdf Commandable_sm.dot -o Commandable_sm.pdf
+// open Commandable_sm.pdf
+
+%start Main::Booted
+%map Main // Use a capital letter to start the map name, to generate valid Ruby.
+
+%%
+
+// Note that Default is called a state, but it really isn't. It is a
+// place to put a bunch of transition rules that will get used in the
+// case of every other state in the map that does *not* provide a 
+// specification for handling that transition. In a sense, the Default
+// transition is a "base class" for all other states, specifying what 
+// should be done if that state doesn't say what to do.
+
+Default
+{
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t) nil  {badTransition(__func__);}
+  start(id: art::RunID, timeout: uint64_t, timestamp: uint64_t)                  nil  {badTransition(__func__);}
+  stop(timeout: uint64_t, timestamp: uint64_t)      nil  {badTransition(__func__);}
+  pause(timeout: uint64_t, timestamp: uint64_t)     nil  {badTransition(__func__);}
+  resume(timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+  shutdown(timeout: uint64_t)  nil  {badTransition(__func__);}
+  soft_init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t) nil  {badTransition(__func__);}
+  reinit(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+}
+
+Booted
+Entry { BootedEnter(); }
+{
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_initialize(pset, timeout, timestamp)]
+      Initialized/push(InitializedMap::Ready)  {}
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  nil  {}
+  shutdown(timeout: uint64_t)  Booted  {}
+}
+
+Initialized
+{
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_initialize(pset, timeout, timestamp)]
+      Initialized/push(InitializedMap::Ready)  {}
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  Booted  {}
+  shutdown(timeout: uint64_t) [ctxt.do_shutdown(timeout)] Booted  { }
+}
+
+%%
+
+%map InitializedMap
+
+%%
+
+Default
+{
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  nil  {badTransition(__func__);}
+  start(id: art::RunID, timeout: uint64_t, timestamp: uint64_t)                   nil  {badTransition(__func__);}
+  stop(timeout: uint64_t, timestamp: uint64_t)      nil  {badTransition(__func__);}
+  pause(timeout: uint64_t, timestamp: uint64_t)     nil  {badTransition(__func__);}
+  resume(timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+  shutdown(timeout: uint64_t)  nil  {badTransition(__func__);}
+  soft_init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t) nil  {badTransition(__func__);}
+  reinit(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+}
+
+Ready
+{
+  start(id: art::RunID, timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_start(id,timeout, timestamp)]  InRun/push(InRunMap::Running)  {}
+  start(id: art::RunID, timeout: uint64_t, timestamp: uint64_t)  nil  {}
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  pop(init, pset, timeout, timestamp)  {}
+  soft_init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  nil  {do_soft_initialize(pset, timeout, timestamp);}
+  shutdown(timeout: uint64_t)  pop(shutdown, timeout)  {}
+}
+
+InRun
+
+Exit  { InRunExit(); }
+{
+  stop(timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_stop(timeout, timestamp)]  Ready  {}
+}
+
+%%
+
+%map InRunMap
+
+%%
+
+Default
+{
+  init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)  nil  {badTransition(__func__);}
+  start(id: art::RunID, timeout: uint64_t, timestamp: uint64_t)                   nil  {badTransition(__func__);}
+  stop(timeout: uint64_t, timestamp: uint64_t)      nil  {badTransition(__func__);}
+  pause(timeout: uint64_t, timestamp: uint64_t)     nil  {badTransition(__func__);}
+  resume(timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+  shutdown(timeout: uint64_t)  nil  {badTransition(__func__);}
+  soft_init(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t) nil  {badTransition(__func__);}
+  reinit(pset: fhicl::ParameterSet const&, timeout: uint64_t, timestamp: uint64_t)    nil  {badTransition(__func__);}
+}
+
+Running
+{
+  pause(timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_pause(timeout, timestamp)]  Paused  {}
+  pause(timeout: uint64_t, timestamp: uint64_t)  nil        {}
+  stop(timeout: uint64_t, timestamp: uint64_t) pop(stop, timeout, timestamp) {}
+  in_run_failure() InRunError {}
+}
+
+Paused
+{
+  resume(timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_resume(timeout, timestamp)]  Running  {}
+  resume(timeout: uint64_t, timestamp: uint64_t)  nil        {}
+  stop(timeout: uint64_t, timestamp: uint64_t) pop(stop, timeout, timestamp) {}
+}
+
+InRunError
+{
+  pause(timeout: uint64_t, timestamp: uint64_t)  [ctxt.do_pause(timeout, timestamp)]  Paused  {}
+  pause(timeout: uint64_t, timestamp: uint64_t)  nil        {}
+  stop(timeout: uint64_t, timestamp: uint64_t) pop(stop, timeout, timestamp) {}
+}
+
+%%

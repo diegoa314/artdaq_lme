@@ -1,0 +1,34 @@
+# This file (artdaq.fcl) documents the parameters accepted on the command-line by artdaq applications (boardreader, eventbuilder, etc)
+
+# The "name" of the application, used in metrics and logging
+application_name: "BoardReader" # Defaults to "BoardReader", "EventBuilder", "DataLogger", "Dispatcher", or "RoutingMaster", depending on app type
+
+# The "rank" of the application, used for transfers between artdaq processes. Must be specified either here or in the configuration.
+# rank: # No default value
+
+# The CommanderPlugin ID (ex. XMLRPC port): An identifier for the Commander plugin's communication
+# id: # No default value
+
+# The CommanderPlugin Type
+# commanderPluginType: # No default value, only xmlrpc for now
+
+# Short form of replace_image_name. If both are specified, long form wins
+rin: false
+
+# Whether to replace the linux image name (as seen in ps) of the artdaq process with application_name
+replace_image_name: @local::rin # Default to false
+
+# When using the "artdaq" executable, this should be set to the desired artdaq application type (boardreader, eventbuilder, etc.)
+app_type: ""
+
+# Same as app_type. If both are specified, app_type takes precedence
+application_type: ""
+
+# Whether to immediately start a run using the startup configuration (standalone mode)
+auto_run: false # Auto-run is disabled by default
+
+# The run number to use in auto-run mode
+run_number: 101
+
+# The amount of time to wait for transitions in auto-run mode
+transition_timeout: 30

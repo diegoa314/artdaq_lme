@@ -1,0 +1,49 @@
+genToArt:
+{
+  run_number: 10
+  events_to_generate: 5
+  fragment_receivers:
+  [
+    {
+      generator: GenericFragmentSimulator
+      payload_size: 10
+      content_selection: 3 
+   }
+  ]
+
+  event_builder:
+  {
+	buffer_count: 10
+	expected_fragments_per_event: 1
+    event_queue_wait_time: 5.0
+    print_event_store_stats: false
+    fragment_receiver_count: 1
+    use_art: true
+    verbose: false
+	max_event_size_bytes: 10000
+  }
+}
+
+
+source:
+{
+  module_type: RawInput
+  waiting_time: 25.0
+  fragment_type_map: [[226, "ABC"]]
+}
+
+outputs: {
+  binaryFileOutput: {  
+      module_type: BinaryFileOutput
+      fileName: "/tmp/genToArt_outToBinaryOutput_t.bin"
+  }
+}
+
+physics: {
+  analyzers: {}
+  producers: {}
+  filters: { }
+  my_output_modules: [ binaryFileOutput ]
+}
+
+process_name: TEST

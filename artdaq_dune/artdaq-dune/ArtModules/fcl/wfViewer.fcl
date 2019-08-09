@@ -1,0 +1,19 @@
+physics: {
+
+analyzers: {
+  ra: {
+    module_type: RootApplication
+    dont_quit: true
+  }
+  wf: {
+    module_type: WFViewer
+    prescale: 1
+    num_x_plots: 2
+    num_y_plots: 2
+    fragment_ids: [0,1,2]
+  }
+}
+
+a1: [ra, wf]
+
+}
