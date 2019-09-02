@@ -1,7 +1,0 @@
-# "throttle_usecs" is the pause, in microseconds, before a new event
-#  is generated. Useful for preventing upstream event generation from
-#  overwhelming downstream event processing.
-
-throttle_usecs: 100000
-string1: "You want to grep for \"grep\" in the output file!"
-string2: "That grep should return both of these lines, but only this line will match \"coconut\"."

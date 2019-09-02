@@ -1,2 +1,0 @@
--n 2 : a.out 
--n 2 : b.out

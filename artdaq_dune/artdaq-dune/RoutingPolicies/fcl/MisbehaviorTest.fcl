@@ -1,9 +1,0 @@
-# RoutingMasterPolicy configuration
-# destination_ranks:        # List of ranks for event builders
-
-# MisbehaviorTest configuration
-misbehave_after_n_events: 1000               # When to start misbehaving
-misbehave_pause_time_ms: 0                   # Pause before sending a table update for this many ms. 0 to disable
-misbehave_send_conflicting_table_data: false # Send a table update with the same sequence ID twice, for different destinations
-misbehave_send_corupt_table_data: false      # Sends a completely random table entry, along with the correct ones
-misbehave_overload_event_builder: false      # Send 100 events to the first event builder in the list

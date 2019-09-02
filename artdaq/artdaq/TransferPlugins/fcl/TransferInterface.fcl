@@ -1,5 +1,0 @@
-# source_rank: # Defaults to my_rank
-# destination_rank: # Defaults to my_rank
-# unique_label: # Defaults to "transfer_between_<source_rank>_and_<destination_rank>"
-buffer_count: 10
-max_fragment_size_words: 1024
