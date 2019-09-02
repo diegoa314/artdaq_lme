@@ -1,0 +1,47 @@
+BEGIN_PROLOG
+
+#include "templates/defaults.fcl"
+#include "templates/services.fcl"
+#include "templates/metrics.fcl"
+#include "templates/outputs.fcl"
+#include "templates/sources.fcl"
+#include "templates/physics.fcl"
+
+aggregator_t: {
+    mpi_buffer_count: @local::defaults.mpi_buffer_count
+    first_event_builder_rank: 1
+    event_builder_count: 1
+    expected_events_per_bunch: 1
+    print_event_store_stats: true
+    event_queue_depth: 20
+    event_queue_wait_time: 5
+    onmon_event_prescale: 1
+}
+
+#services_aggregator_t: { @table::services_aggregator_t }
+
+
+source_aggregator_t: { @table::NetMonInput_t }
+
+daq_aggregator_t: { 
+  max_fragment_size_words: @local::defaults.max_fragment_size_words
+
+  aggregator: { @table::aggregator_t }
+
+  metrics: { 
+      aggFile: { @table::filemetric_t 
+	fileName: "/tmp/aggregator/agg_%UID%_metrics.log"
+    }
+  }
+}
+
+physics_aggregator_t:{  
+  @table::physics_t
+  p1: [  ] 
+  p2: [ BuildInfo ]
+  pmod2: [ prescaleMod2 ]
+  pmod3: [ prescaleMod3 ]
+  a1: [ app, wf ]
+}
+
+END_PROLOG

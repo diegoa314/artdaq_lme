@@ -1,0 +1,20 @@
+15-May-2014, KAB
+
+An idea: would it be useful to assign ranges of TRACE levels to different
+classes or functions inside artdaq?
+
+If so, here is an initial proposal:
+- level 0: errors
+- levels  1- 3: available
+- levels  4- 7: RHandles
+- levels  8-11: SHandles
+- levels 12-15: EventStore
+- levels 16-23: BoardReaderCore, EventBuilderCore, AggregatorCore
+- levels 24-27: Generators
+- levels 28-31: main routines
+- levels 32-63: available
+
+
+To enable tracing, run "export TRACE_NAME=artdaq" and "tlvlM -nartdaq -1"
+before starting the MPI program. Then use "tshow" to show the contents of
+the trace buffer, and "ttids" to show the list of names.

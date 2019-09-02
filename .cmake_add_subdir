@@ -1,0 +1,4 @@
+# DO NOT DELETE 
+ADD_SUBDIRECTORY(artdaq_core_demo)
+ADD_SUBDIRECTORY(artdaq_demo)
+ADD_SUBDIRECTORY(artdaq)

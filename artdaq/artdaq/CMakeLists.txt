@@ -1,0 +1,11 @@
+add_subdirectory(DAQdata)
+add_subdirectory(DAQrate)
+add_subdirectory(Application)
+add_subdirectory(ExternalComms)
+add_subdirectory(ArtModules)
+add_subdirectory(BuildInfo)
+add_subdirectory(TransferPlugins)
+
+if (${USING_RTIDDS})
+add_subdirectory(RTIDDS)
+endif()

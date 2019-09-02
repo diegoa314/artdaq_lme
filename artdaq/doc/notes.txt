@@ -1,0 +1,112 @@
+
+  event are a collection of packet, one from each sender.
+
+  parameters:
+  * number of nodes (senders and receivers)
+  * number of senders
+  * event size
+  * events queue size
+  * total events to generate
+
+  calculated from parameters:
+  * packet_size = event_size / number_of_senders
+  * sender buffers needed = events_queue_size * number_of_receivers
+  * barrier_period = when all sender buffers sent
+  * receiver buffers needed = event_queue_size * number_of_senders
+
+  measurements made:
+  * aggregate number of events processed per second
+  * average cpu time (system and user) used per event
+
+  processing logic for real test:
+
+  (1)
+  1/2 the nodes senders, 1/2 are receivers.
+  each receiver will get a packet from all senders to form a total event.
+  each sender will send a packet to senders in a round-robin fashion.
+  each sender will put a packet sequence number in the first word of packet.
+
+  (2)
+  each node acts as a sender and receiver, where sender and receiver act
+  as described above.
+
+  (3)
+  each receiver will send the total event to a sync node.  The number of
+  sync node will be configurable.  The number of events queued as receiver
+  configurable also.
+
+  sender queuing: a configuraable number of packets can be in flight.  after that
+  many packet are sent, senders must do a barrier call to be use no one
+  is running ahead or behind.
+
+  notes: probably need two communicators, will need to use waitany.
+
+  note: if 2 nodes configured, with 1 sender and 1 receiver, then this
+  is simply measuring transfer time of data from one machine to the other.
+
+
+------------------
+
+seeding of the random number engine is important and needs to be done
+in the same way for each run and for each process.
+
+------------------
+
+Changes for the new architecture.
+
+Parameters:
+	total_nodes
+	senders_per_node
+	sinks_per_node
+Calculated:
+	buider_nodes = total_nodes / 2
+	detector_nodes = total_nodes / 2
+	senders = total_nodes * senders_per_node
+	sinks = total_nodes * sinks_per_node
+	detectors = senders
+
+example: nodes=4, senders=3, sinks=2, builders=2, detectors=2
+
+rank organization: [0,d):detectors, [d,s):senders, [s,r):sinks
+
+preprocessor needed:
+Purpose is to generate a node file for mpirun to use that matches
+the need for multiple elements per node.
+
+The biggest change is the need for the detector-generator layer and
+the multiple data movers per node.
+
+-------------------
+
+Where I am 1/9/2011.
+
+Config and builder are changes for the new architecture.  The
+Shandle and Rhandle classes still need to be updated to use the
+new Config and to recognize the presence of the detector, source,
+and sink where necessary (probably in the determination of the 
+"to" for the send.
+
+-------------------
+Parameter value to test with.
+Here is the set of parameters.
+
+RUN=1 EVENTS=10 BUFFERS=10 NODES=2 EVENT_SIZE=100000
+DETS_PER=3 SRCS_PER=3 SINKS_PER=2
+
+Here is what I think the test ranges are for each that are interesting.
+
+DETS_PER [1,3]
+SRCS_PER [1,4]
+SINKS_PER [1,4]
+EVENT_SIZE {50K,100K,200K,400K,800K,2M,4M,8M}
+NODES {4,8,16,32}
+
+The EVENTS should target >20 seconds run time
+The BUFFERS will probably be fixed at 5 or 10.
+
+
+----------------------
+
+3/11/2011
+lustre area is : /lqcdproj/jbk
+ran out of disk space on /home/jbk

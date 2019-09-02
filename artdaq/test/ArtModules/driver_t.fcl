@@ -1,0 +1,19 @@
+run_number: 10
+events_to_generate: 2  # zero means infinite
+
+fragment_receiver:
+{
+  generator: GenericFragmentSimulator
+  fragments_per_event: 5
+}
+
+event_builder:
+{
+  expected_fragments_per_event: @local::fragment_receiver.fragments_per_event
+  events_expected_in_SimpleQueueReader: @local::events_to_generate
+  use_art: false
+  max_event_size_bytes: 0x100000
+  buffer_count: 4
+  fragment_count: @local::fragment_receiver.fragments_per_event
+  shared_memory_key: 0xD51FE5
+}

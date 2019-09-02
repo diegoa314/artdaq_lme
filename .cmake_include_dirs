@@ -1,0 +1,13 @@
+# DO NOT DELETE 
+# artdaq_core_demo package block
+set(artdaq_core_demo_not_in_ups true)
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/artdaq_core_demo )
+include_directories ( $ENV{MRB_BUILDDIR}/artdaq_core_demo )
+# artdaq_demo package block
+set(artdaq_demo_not_in_ups true)
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/artdaq_demo )
+include_directories ( $ENV{MRB_BUILDDIR}/artdaq_demo )
+# artdaq package block
+set(artdaq_not_in_ups true)
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/artdaq )
+include_directories ( $ENV{MRB_BUILDDIR}/artdaq )

@@ -1,0 +1,57 @@
+BEGIN_PROLOG
+
+#include "templates/defaults.fcl"
+#include "templates/services.fcl"
+#include "templates/metrics.fcl"
+#include "templates/outputs.fcl"
+#include "templates/sources.fcl"
+#include "templates/physics.fcl"
+
+eventbuilder_t: {
+    mpi_buffer_count: @local::defaults.mpi_buffer_count
+    first_fragment_receiver_rank: 0
+    fragment_receiver_count: 1
+    expected_fragments_per_event: 1
+    use_art: true
+    print_event_store_stats: true
+    verbose: true
+}
+
+daq_eventbuilder_t: { 
+  max_fragment_size_words: @local::defaults.max_fragment_size_words
+
+  event_builder: { @table::eventbuilder_t }
+
+  metrics: {  
+      evbFile : {
+	@table::filemetric_t 
+	fileName: "/tmp/eventbuilder/evb_%UID%_metrics.log"
+	}
+      }
+}
+
+physics_eventbuilder_config2_t:{  
+  @table::physics_t
+  analyzers: {}
+  producers: {}
+  p1: [  ] 
+  pmod2: [ prescaleMod2 ]
+  pmod3: [ prescaleMod3 ]
+}
+
+physics_eventbuilder_config1_t:{  
+  @table::physics_t
+  analyzers: {}
+  producers: {}  
+  p1: [  ] 
+  pmod2: [ prescaleMod2 ]
+  pmod3: [ prescaleMod3 ]
+}
+
+services_eventbuilder_config1_t: { @table::services_t }
+services_eventbuilder_config2_t: { @table::services_t }
+
+source_eventbuilder_config1_t:   { @table::RawInput_t }
+source_eventbuilder_config2_t:   { @table::RawInput_t }
+
+END_PROLOG

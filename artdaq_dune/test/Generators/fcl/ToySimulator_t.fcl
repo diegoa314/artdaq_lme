@@ -1,0 +1,41 @@
+genToArt:
+{
+  run_number: 10
+  events_to_generate: 20
+
+  fragment_receivers:
+  [
+    {
+      generator: ToySimulator
+      fragment_type: TOY2
+      nADCcounts: 100
+      distribution_type: 1  # 0: uniform distribution, 1: normal distribution
+      board_id: 0
+      fragment_id: 0
+   }
+  ]
+
+  event_builder:
+  {
+	buffer_count: 10
+	max_event_size_bytes: 1000
+	expected_fragments_per_event: 1
+    timeout: 5.0
+    print_stats: false
+  }
+}
+
+process_name: TEST
+
+source:
+{
+  module_type: RawInput
+  waiting_time: 25.0
+  fragment_type_map: [[3, "TOY2"]]
+}
+
+physics: {
+  analyzers: {}
+  producers: {}
+  filters: { }
+}

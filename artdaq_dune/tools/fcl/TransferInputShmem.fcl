@@ -1,0 +1,159 @@
+
+# JCF, May-20-2016
+
+# This art FHiCL code is designed to demonstrate the capabilities of
+# the new TransferInput source, written to allow art processes to
+# directly consume data broadcast from artdaq using an implementation
+# of TransferInterface (as of this writing, the only such
+# implementation is RTIDDSTransfer)
+
+# JCF, Sep-13-2016
+
+# Specifically, using artdaq-demo's NthEvent transfer plugin, which in
+# turn will use the Shmem transfer plugin for physical
+# transport. Note the assumption in the FHiCL is that you're on the
+# same host as the dispatcher aggregator
+
+# If "modulus" is set to "N", that means "send every Nth event from
+# the dispatcher"
+
+modulus: 5
+
+physics:
+{
+  analyzers:
+  {
+
+    app: {
+      module_type: RootApplication
+      force_new: true
+    }
+
+    wf: {
+      module_type: WFViewer
+      fragment_ids: [0, 1, 2, 3]
+      fragment_type_labels: [TOY1, TOY2]
+      prescale: 1
+
+      digital_sum_only: false
+    }
+
+   checkintegrity: {
+     module_type: CheckIntegrity
+     raw_data_label: daq
+     frag_type: TOY1
+   }
+
+   toyDump: {
+     module_type: ToyDump
+     raw_data_label: daq
+     frag_type: TOY1
+     num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
+     dump_to_screen: true
+   }
+
+  }
+
+
+  a1: [app, wf]
+  a2: [checkintegrity]
+  a3: [toyDump]
+  e1: [ out1 ]
+  end_paths: [ a3 ]
+}
+
+outputs:
+{
+  out1:
+  {
+    module_type: FileDumperOutput
+    wantProductFriendlyClassName: true
+    onlyIfPresent: true
+  }
+
+
+}
+
+source:
+{
+
+  module_type: TransferInput
+
+  # The timeout shouldn't be much smaller than the period between events, otherwise 
+  # there's a spew of timeout messages
+
+  timeoutInUsecs: 10000000  
+
+  commanderPluginType: xmlrpc
+  dispatcherHost: localhost
+  dispatcherPort: 5269
+
+  transfer_plugin: {
+
+    transferPluginType: NthEvent
+    nth: @local::modulus
+
+    unique_label: "shmem1"
+
+    physical_transfer_plugin: {
+
+      transferPluginType: Shmem
+    
+      shm_key: 0x40471452
+
+      max_fragment_size_words: 2097152
+      first_event_builder_rank: 0
+	  source_rank: 5
+	  destination_rank: 6
+    }
+  }
+
+  dispatcher_config: {
+	unique_label: "shmem1"
+	path: [ out ]
+	filter_paths: [ {name: pmod path: [ prescale ]}  ]
+	physics: {
+	filters: {
+
+   prescale: {
+
+   module_type: Prescaler
+
+   prescaleFactor: 1
+   prescaleOffset: 0
+   }
+   }
+ }
+	outputs: {
+	  out: {
+	    module_type: TransferOutput
+		
+           SelectEvents: [ pmod ] 
+		
+  transfer_plugin: {
+
+    transferPluginType: NthEvent
+    nth: @local::modulus
+
+    unique_label: "shmem1"
+
+    physical_transfer_plugin: {
+
+      transferPluginType: Shmem
+    
+      shm_key: 0x40471452
+
+      max_fragment_size_words: 2097152
+      first_event_builder_rank: 0
+	  destination_rank: 6
+    }
+  }
+	  } 
+	}
+  }
+}
+
+process_name: TransferInputShmem
+
+
+

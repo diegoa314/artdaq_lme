@@ -1,0 +1,4 @@
+#include "RoutingMasterPolicy.fcl"
+
+policy: "CapacityTest"
+token_used_per_table_percent: 50 # The fraction of available tokens which will be used for each table update ( = ceil(token_count * percentage / 100) )
