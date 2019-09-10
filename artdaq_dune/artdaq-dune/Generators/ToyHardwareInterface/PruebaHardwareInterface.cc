@@ -11,6 +11,9 @@
 #include <unistd.h>
 #include <iostream>
 #include <cstdlib>
+#include <math>
+
+#define PI 3.14159265
 
 PruebaHardwareInterface::PruebaHardwareInterface(fhicl::ParameterSet const& ps) :
 	taking_data_(false)
@@ -31,10 +34,6 @@ PruebaHardwareInterface::PruebaHardwareInterface(fhicl::ParameterSet const& ps) 
 	, // MUST be after "fragment_type"
 	throttle_usecs_(ps.get<size_t>("throttle_usecs", 100000))
 	, usecs_between_sends_(ps.get<size_t>("usecs_between_sends", 0))
-	, distribution_type_(static_cast<DistributionType>(ps.get<int>("distribution_type")))
-	, engine_(ps.get<int64_t>("random_seed", 314159))
-	, uniform_distn_(new std::uniform_int_distribution<data_t>(0, maxADCvalue_))
-	, gaussian_distn_(new std::normal_distribution<double>(0.5 * maxADCvalue_, 0.1 * maxADCvalue_))
 	, start_time_(fake_time_)
 	, send_calls_(0)
 	, serial_number_((*uniform_distn_)(engine_))
@@ -83,7 +82,7 @@ void PruebaHardwareInterface::FillBuffer(char* Buffer, size_t*bytes_read) {
 			}
 			else if (exit_after_N_seconds_) {
 				std::exit(1);	 
-	}
+			}
 			else if (exception_after_N_seconds_) {
 				throw cet::exception("HardwareInterface")<<"Excepcion de prueba";
 			}
@@ -95,17 +94,43 @@ void PruebaHardwareInterface::FillBuffer(char* Buffer, size_t*bytes_read) {
 				while(true) {};
 			}
 		}
+	
+		/*El tamaño del fragmento debe ser multiplo de Header::dato_t, unidad basica de dato*/
+		assert(*bytes_read % sizeof(Prueba::PruebaFragmento::Header::dato_t) == 0);
+		//Se crea el header con la direccion del buffer
+		Prueba::PruebaFragmento::Header* header=reinterpret_cast<Prueba:PruebaFragment::Header*>(buffer);			
+		//llenamos el header
+		header->periodo=100; //por poner un valor
+		header->canales_act=3;
+		header->tam_evento=*bytes_read/sizeof(Prueba::PruebaFragmento::Header::dato_t);	
+		data_t* adc_read=reinterpret_cast<data_t*>(header+1);
+		//se generan los datos
+		for (size_t i=0;i<nADCcounts_;i++) {
+			adc_read[i]=sin(2*PI*i);
+		}
 	}
-	/*El tamaño del fragmento debe ser multiplo de Header::dato_t, unidad basica de dato*/
-	assert(*bytes_read % sizeof(Prueba::PruebaFragmento::Header::dato_t) == 0);
-	//Se crea el header con la direccion del buffer
-	Prueba::PruebaFragmento::Header* header=reinterpret_cast<Prueba:PruebaFragment::Header*>(buffer);			
-	//llenamos el header
-	header->periodo=100; //por poner un valor
-	header->canales_act=3;
-	header->tam_evento=*bytes_read/sizeof(Prueba::PruebaFragmento::Header::dato_t);
-	data_t* adc_read=reinterpret_cast<data_t*>(header+1);
+}
 
+void PruebaHardwareinterface::AllocateBuffer (char** buffer) {
+	*buffer=reinterpret_cast<char*>(new uint_8[sizeof(Prueba::PruebaFragmento::Header)+maxADCcounts_*sizeof(data_t)]);
+	
+}
+
+void PruebaHardwareInterface::FreeReadoutBuffer(char* buffer) {
+	delete[] buffer; 	
+}
+
+int PruebaHardwareInterface::SerialNumber() {
+	return 123;
+}
+
+int PruebaHardwareInterface::NumADCNumber() {
+	return 8;
+}	
+
+
+
+	
 	
 
 
