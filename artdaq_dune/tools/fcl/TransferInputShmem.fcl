@@ -32,24 +32,38 @@ physics:
     wf: {
       module_type: WFViewer
       fragment_ids: [0, 1, 2, 3]
-      fragment_type_labels: [TOY1, TOY2]
+      fragment_type_labels: [TOY1, TOY2, PRUEBA]
       prescale: 1
 
       digital_sum_only: false
     }
 
-   checkintegrity: {
+  # checkintegrity: {
+   #  module_type: CheckIntegrity
+    # raw_data_label: daq
+     #frag_type: TOY1
+   #}
+
+ checkintegrity: {
      module_type: CheckIntegrity
      raw_data_label: daq
-     frag_type: TOY1
-   }
+     frag_type: PRUEBA
+   }	
 
-   toyDump: {
-     module_type: ToyDump
-     raw_data_label: daq
-     frag_type: TOY1
-     num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
-     dump_to_screen: true
+ #  toyDump: {
+  #   module_type: ToyDump
+   #  raw_data_label: daq
+    # frag_type: TOY1
+    # num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
+    # dump_to_screen: true
+   #}
+
+  toyDump: {
+    module_type: ToyDump
+    raw_data_label: daq
+    frag_type: PRUEBA
+    num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
+    dump_to_screen: true
    }
 
   }

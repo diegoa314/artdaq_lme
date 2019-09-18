@@ -11,8 +11,8 @@ fragment_receiver: {
 
    # Parameters defining and configuring the fragment generator to be used
    		    
-   generator: ToySimulator 
-   fragment_type: TOY2        # Make sure downstream modules know about this fragment_type!
+   generator: PruebaSimulator
+   fragment_type: PRUEBA        # Make sure downstream modules know about this fragment_type!
    nADCcounts: 100
    distribution_type: 1
    throttle_usecs: 10000
@@ -44,7 +44,7 @@ physics:
   {
     toyDump:
     {
-      module_type: ToyDump
+      module_type: ToyDumpPrueba
       raw_data_label: daq
       frag_type: @local::fragment_receiver.fragment_type
       num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
@@ -65,7 +65,7 @@ physics:
   a1: [ toyDump ]
   p1: [ artdaqDemoBuildInfo ]
   e1: [ out1, rootout ]
-  end_paths: [ a1, e1 ]
+  end_paths: [ a1 ]
 }
 
 outputs:

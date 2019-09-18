@@ -7,7 +7,7 @@ namespace demo
 	/**
 	 * \brief List of names (in the order defined below) of the User types defined in artdaq_core_demo
 	 */
-	std::vector<std::string> const names{"MISSED", "TOY1", "TOY2", "UNKNOWN"};
+	std::vector<std::string> const names{"MISSED","PRUEBA", "TOY1", "TOY2", "UNKNOWN"};
 
 	/**
 	 * \brief Implementation details namespace
@@ -20,6 +20,7 @@ namespace demo
 		enum FragmentType : artdaq::Fragment::type_t
 		{
 			MISSED = artdaq::Fragment::FirstUserFragmentType,
+			PRUEBA,
 			TOY1,
 			TOY2,
 			ASCII,

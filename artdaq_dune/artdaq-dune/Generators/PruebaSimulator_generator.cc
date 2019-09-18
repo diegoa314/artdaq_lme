@@ -9,7 +9,7 @@
 #include "artdaq/Application/GeneratorMacros.hh"
 #include "artdaq-core/Utilities/SimpleLookupPolicy.hh"
 
-#include "artdaq-core-dune/Overlays/PruebaFragment.hh"
+#include "artdaq-core-dune/Overlays/PruebaFragmento.hh"
 #include "artdaq-core-dune/Overlays/FragmentType.hh"
 
 #include "fhiclcpp/ParameterSet.h"
@@ -35,12 +35,13 @@ prueba::PruebaSimulator::PruebaSimulator(fhicl::ParameterSet const& ps)
 	, fragment_type_(static_cast<decltype(fragment_type_)>(artdaq::Fragment::InvalidFragmentType)) //??
 {
 	//se reserva espacio en el buffer
-	hardware_interface_->AllocateReadoutBuffer(&readout_buffer_);
+	hardware_interface_->AllocateBuffer(&readout_buffer_);
 	//se carga el metadato	
-	metadato_.board_serial_number = hardware_interface_->SerialNumber() & 0xFFFF;
-	metadato_.num_adc_bits = hardware_interface_->NumADCBits();
+	metadato_.serial = hardware_interface_->SerialNumber() & 0xFFFF;
+	metadato_.n_adc_bits = hardware_interface_->NumADCBits();
 	//informacion de debugging
-	TLOG(TLVL_INFO) << "Constructor: metadata_.unused = 0x" << std::hex << metadata_.unused << " sizeof(metadata_) = " << std::dec << sizeof(metadata_);
+	TLOG(TLVL_INFO) << "Constructor: metadata_.unused = 0x" << std::hex << metadato_.unused << " sizeof(metadata_) = " << std::dec << sizeof(metadato_);
+	fragment_type_ = demo::toFragmentType("PRUEBA");
 }
 
 prueba::PruebaSimulator::~PruebaSimulator() {
@@ -60,7 +61,7 @@ bool prueba::PruebaSimulator::getNext_(artdaq::FragmentPtrs& frags)
 	if (should_stop()) { 
 		return false;
 	}		 	
-	std::size_t bytes_read=0 //cantidad de bytes a leer
+	std::size_t bytes_read=0; //cantidad de bytes a leer
 	hardware_interface_->FillBuffer(readout_buffer_, &bytes_read);
 	/* Para crear el fragmento se usa el static factory function
  	* de la clase Fragment.
@@ -76,26 +77,29 @@ bool prueba::PruebaSimulator::getNext_(artdaq::FragmentPtrs& frags)
  	* \param timestamp Timestamp of Fragment
  	* \return FragmentPtr to created Fragment
 	*/
-	artdaq::FragmentPtr fragptr artdaq::Fragment::FragmentBytes(bytes_read, ev_counter(), fragment_id(),fragment_type_, metadato_, timestamp);
+	artdaq::FragmentPtr fragptr (artdaq::Fragment::FragmentBytes(bytes_read, ev_counter(), fragment_id(),fragment_type_, metadato_, timestamp_));
 	frags.emplace_back(std::move(fragptr)); //ver el concepto de mve
 	//dataBeginBytes() retorna la direccion donde comienza el payload del fragmento
 	memcpy(frags.back()->dataBeginBytes(),readout_buffer_, bytes_read);	
-	eva_counter_inc();
+	artdaq::CommandableFragmentGenerator::ev_counter_inc();
 	timestamp_+=timestampScale_;
+	return true;
 		 	
 }
 
 void prueba::PruebaSimulator::start() {
-	harware_interface_->StartDatataking();
+	hardware_interface_->StartDatataking();
 	timestamp_=0;
 }
 
 void prueba::PruebaSimulator::stop() {
-	hardware_interface_->StopDatataking;
+	hardware_interface_->StopDatataking();
 }
-
+void prueba::PruebaSimulator::stopNoMutex() {
+	hardware_interface_->StopDatataking();
+}
 //Macro definido en GeneratorMacros.hh
-DEFINE_AARTDAQ_COMMANDABLE_GENERATOR(prueba::ToySimulator)
+DEFINE_ARTDAQ_COMMANDABLE_GENERATOR(prueba::PruebaSimulator)
 
 
 

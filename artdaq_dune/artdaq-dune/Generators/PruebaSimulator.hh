@@ -8,10 +8,10 @@
 #include "fhiclcpp/fwd.h"
 #include "artdaq-core/Data/Fragment.hh"
 #include "artdaq/Application/CommandableFragmentGenerator.hh"
-#include "artdaq-core-dune/Overlays/PruebaFragment.hh"
+#include "artdaq-core-dune/Overlays/PruebaFragmento.hh"
 #include "artdaq-core-dune/Overlays/FragmentType.hh"
 
-#include "ToyHardwareInterface/ToyHardwareInterface.hh"
+#include "ToyHardwareInterface/PruebaHardwareInterface.hh"
 
 #include <random>
 #include <vector>
@@ -44,13 +44,13 @@ namespace prueba {
 		std::unique_ptr<PruebaHardwareInterface> hardware_interface_;
 		//estampa temporal que el generador debe agregar al frag
 		artdaq::Fragment::timestamp_t timestamp_; 
-		int timestampScale; //escala de la estampa
+		int timestampScale_; //escala de la estampa
 		PruebaFragmento::Metadato metadato_;
 		/*readout_buffer_ es un puntero que apunta al buffer
  		* que es llenado por el hardware interface*/
 		char* readout_buffer_;
 		//tipo de fragmento
-		FragmentType fragment_type_;
+		demo::FragmentType fragment_type_;
 	 
 	};		
 }

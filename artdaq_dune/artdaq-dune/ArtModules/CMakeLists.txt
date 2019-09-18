@@ -42,12 +42,18 @@ simple_plugin(ArtdaqDemoBuildInfo "module"
   ${CETLIB_EXCEPT}
 )
 
+simple_plugin(ToyDumpPrueba "module"
+             artdaq-core_Data
+			  artdaq-core-dune_Overlays
+ ${CETLIB_EXCEPT})
+
+
 simple_plugin(NthEvent "module"
   ${CETLIB_EXCEPT})
 simple_plugin(ToyDump "module"
-              artdaq-core_Data
+             artdaq-core_Data
 			  artdaq-core-dune_Overlays
-  ${CETLIB_EXCEPT})
+ ${CETLIB_EXCEPT})
 simple_plugin(ASCIIDump "module"
               artdaq-core_Data
 			  artdaq-core-dune_Overlays

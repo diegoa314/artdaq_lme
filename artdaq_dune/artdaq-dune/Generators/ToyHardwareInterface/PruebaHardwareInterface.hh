@@ -13,7 +13,7 @@ public:
 	typedef uint8_t data_t; /*El tipo de dato para representar las
 				*cuentas del ADC*/
 	/*El constructor recibe un parameterset con las configuraciones*/
-	explicit PruebaHardware(fhicl::ParameterSet const & ps);
+	explicit PruebaHardwareInterface(fhicl::ParameterSet const & ps);
 	//StartDatataking avisa al hardware para comenzar el envio de datos	
 	void StartDatataking();
 	//StopDatataking realiza acciones del shutdown
@@ -51,18 +51,18 @@ private:
 	std::size_t maxADCvalue_;
 	std::size_t throttle_usecs_;
 	std::size_t usecs_between_sends_;
-	DistributionType distribution_type_;
+	//DistributionType distribution_type_;
 
 	using time_type = decltype(std::chrono::steady_clock::now());
 
 	const time_type fake_time_ = std::numeric_limits<time_type>::max();
 
 	// Members needed to generate the simulated data
-
+/*
 	std::mt19937 engine_;
 	std::unique_ptr<std::uniform_int_distribution<data_t>> uniform_distn_;
 	std::unique_ptr<std::normal_distribution<double>> gaussian_distn_;
-
+*/
 	time_type start_time_;
 	int send_calls_;
 	int serial_number_;
