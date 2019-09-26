@@ -30,7 +30,7 @@ physics:
     }
 
     wf: {
-      module_type: WFViewer
+      module_type: Graficador
       fragment_ids: [0, 1, 2, 3]
       fragment_type_labels: [TOY1, TOY2, PRUEBA]
       prescale: 1
@@ -38,13 +38,13 @@ physics:
       digital_sum_only: false
     }
 
-  # checkintegrity: {
-   #  module_type: CheckIntegrity
-    # raw_data_label: daq
-     #frag_type: TOY1
-   #}
+  checkintegrity: {
+    module_type: CheckIntegrity
+     raw_data_label: daq
+     frag_type: PRUEBA
+   }
 
- checkintegrity: {
+ checkintegrity2: {
      module_type: CheckIntegrity
      raw_data_label: daq
      frag_type: PRUEBA
@@ -73,7 +73,7 @@ physics:
   a2: [checkintegrity]
   a3: [toyDump]
   e1: [ out1 ]
-  end_paths: [ a3 ]
+  end_paths: [ a1 ]
 }
 
 outputs:

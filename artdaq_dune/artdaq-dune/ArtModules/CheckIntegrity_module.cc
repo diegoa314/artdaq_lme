@@ -11,7 +11,7 @@
 #include "art/Framework/Principal/Handle.h"
 #include "canvas/Utilities/Exception.h"
 
-#include "artdaq-core-dune/Overlays/ToyFragment.hh"
+#include "artdaq-core-dune/Overlays/PruebaFragmento.hh"
 #include "artdaq-core/Data/ContainerFragment.hh"
 #include "artdaq-core/Data/Fragment.hh"
 
@@ -26,7 +26,7 @@
 #include <vector>
 #include <iostream>
 
-namespace demo
+namespace prueba
 {
 	class CheckIntegrity;
 }
@@ -34,7 +34,7 @@ namespace demo
 /**
  * \brief Demonstration art::EDAnalyzer which checks that all ToyFragment ADC counts are in the defined range
  */
-class demo::CheckIntegrity : public art::EDAnalyzer
+class prueba::CheckIntegrity : public art::EDAnalyzer
 {
 public:
 	/**
@@ -63,18 +63,18 @@ private:
 };
 
 
-demo::CheckIntegrity::CheckIntegrity(fhicl::ParameterSet const& pset)
+prueba::CheckIntegrity::CheckIntegrity(fhicl::ParameterSet const& pset)
 	: EDAnalyzer(pset)
 	, raw_data_label_(pset.get<std::string>("raw_data_label"))
 {}
 
-void demo::CheckIntegrity::analyze(art::Event const& evt)
+void prueba::CheckIntegrity::analyze(art::Event const& evt)
 {
 
 
 	artdaq::Fragments fragments;
 	artdaq::FragmentPtrs containerFragments;
-	std::vector<std::string> fragment_type_labels{ "TOY1", "TOY2", "ContainerTOY1", "ContainerTOY2" };
+	std::vector<std::string> fragment_type_labels{ "PRUEBA", "ContainerPRUEBA"};
 
 	for (auto label : fragment_type_labels)
 	{
@@ -83,7 +83,7 @@ void demo::CheckIntegrity::analyze(art::Event const& evt)
 		evt.getByLabel(raw_data_label_, label, fragments_with_label);
 		if (!fragments_with_label.isValid()) continue;
 
-		if (label == "Container" || label == "ContainerTOY1" || label == "ContainerTOY2")
+		if (label == "Container" || label == "ContainerPRUEBA")
 		{
 			for (auto cont : *fragments_with_label)
 			{
@@ -111,28 +111,28 @@ void demo::CheckIntegrity::analyze(art::Event const& evt)
 	bool err = false;
 	for (const auto& frag : fragments)
 	{
-		ToyFragment bb(frag);
+		PruebaFragmento bb(frag);
 
-		if (bb.hdr_event_size() * sizeof(ToyFragment::Header::data_t) != frag.dataSize() * sizeof(artdaq::RawDataType))
+		if (bb.hdr_event_size() * sizeof(PruebaFragmento::Header::dato_t) != frag.dataSize() * sizeof(artdaq::RawDataType))
 		{
 			TLOG(TLVL_ERROR) << "Error: in run " << evt.run() << ", subrun " << evt.subRun() <<
 				", event " << evt.event() << ", seqID " << frag.sequenceID() <<
 				", fragID " << frag.fragmentID() << ": Size mismatch!" <<
-				" ToyFragment Header reports size of " << bb.hdr_event_size() * sizeof(ToyFragment::Header::data_t) << " bytes, Fragment report size of " << frag.dataSize() * sizeof(artdaq::RawDataType) << " bytes.";
+				" ToyFragment Header reports size of " << bb.hdr_event_size() * sizeof(PruebaFragmento::Header::dato_t) << " bytes, Fragment report size of " << frag.dataSize() * sizeof(artdaq::RawDataType) << " bytes.";
 			continue;
 		}
 
 
 		{
 			auto adc_iter = bb.dataBeginADCs();
-			ToyFragment::adc_t expected_adc = 1;
+			PruebaFragmento::adc_t expected_adc = 1;
 
 			for (; adc_iter != bb.dataEndADCs(); adc_iter++, expected_adc++)
 			{
-				if (expected_adc > bb.adc_range(frag.metadata<ToyFragment::Metadata>()->num_adc_bits)) expected_adc = 0;
+				//if (expected_adc > bb.adc_range(frag.metadata<PruebaFragment::Metadato>()->num_adc_bits)) expected_adc = 0;
 
 				// ELF 7/10/18: Distribution type 2 is the monotonically-increasing one
-				if (bb.hdr_distribution_type() == 2 && *adc_iter != expected_adc)
+				/*if (bb.hdr_distribution_type() == 2 && *adc_iter != expected_adc)
 				{
 					TLOG(TLVL_ERROR) << "Error: in run " << evt.run() << ", subrun " << evt.subRun() <<
 						", event " << evt.event() << ", seqID " << frag.sequenceID() <<
@@ -140,17 +140,17 @@ void demo::CheckIntegrity::analyze(art::Event const& evt)
 						", got " << *adc_iter;
 					err = true;
 					break;
-				}
+				}*/
 
 				// ELF 7/10/18: As of now, distribution types 3 and 4 are uninitialized, and can therefore produce out-of-range counts.
-				if (bb.hdr_distribution_type() < 3 && *adc_iter > bb.adc_range(frag.metadata<ToyFragment::Metadata>()->num_adc_bits))
+				/*if (bb.hdr_distribution_type() < 3 && *adc_iter > bb.adc_range(frag.metadata<ToyFragment::Metadata>()->num_adc_bits))
 				{
 					TLOG(TLVL_ERROR) << "Error: in run " << evt.run() << ", subrun " << evt.subRun() <<
 						", event " << evt.event() << ", seqID " << frag.sequenceID() <<
 						", fragID " << frag.fragmentID() << ": " << *adc_iter << " is out-of-range for this Fragment type";
 					err = true;
 					break;
-				}
+				}*/
 			}
 
 		}
@@ -161,4 +161,4 @@ void demo::CheckIntegrity::analyze(art::Event const& evt)
 	}
 }
 
-DEFINE_ART_MODULE(demo::CheckIntegrity)
+DEFINE_ART_MODULE(prueba::CheckIntegrity)

@@ -34,9 +34,10 @@ public:
  * canales activos*/
 	struct Header {
 		typedef uint32_t dato_t; //tamaño del header
-		dato_t periodo: 8;
-		dato_t canales_act: 8;
-		dato_t tam_evento: 16; /* esto define el tamaño del 
+		dato_t periodo: 8; //periodo de muestra
+		dato_t freq_muestreo: 8; //frecuencia de muestreo
+		dato_t canales_act: 8;//escala vertical
+		dato_t tam_evento: 8; /* esto define el tamaño del 
 		payload en terminos de dato_t. Esto significa que como
 		maximo se tendran 2**16 dato_t o 2**16 * 32 bits de 
 		payload. payload es header mas cuentas adc  */
@@ -51,6 +52,13 @@ public:
 	Header::dato_t hdr_tam_fragmento() const {
 		return header_()->tam_evento;
 	}
+	Header::dato_t freq_muestreo() {
+		return header_()->freq_muestreo;
+	}
+	Header::dato_t periodo() {
+		return header_()->periodo;
+	}
+
 	static constexpr size_t hdr_size_words() { 
 		return Header::tam_palabra; 
 	}
@@ -78,7 +86,7 @@ public:
 		if (index >= total_adc_values()) { return 0xff; }
 		return dataBeginADCs()[index];
 	}
-
+	
 protected:
 	Header const * header_() const {
 		return reinterpret_cast<PruebaFragmento::Header const *>(fragmento.dataBeginBytes()); /*Lo que se hace aca es hacer que la direccion del 

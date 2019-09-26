@@ -46,6 +46,14 @@ simple_plugin(ToyDumpPrueba "module"
              artdaq-core_Data
 			  artdaq-core-dune_Overlays
  ${CETLIB_EXCEPT})
+simple_plugin(Graficador "module"
+             artdaq-core_Data
+			  artdaq-core-dune_Overlays
+			  ${ROOT_GPAD}
+			  ${ROOT_HIST}
+			  ${ROOT_GUI}
+			  ${ROOT_RIO}	
+ ${CETLIB_EXCEPT})
 
 
 simple_plugin(NthEvent "module"

@@ -44,7 +44,7 @@ physics:
   {
     toyDump:
     {
-      module_type: ToyDumpPrueba
+      module_type: Graficador
       raw_data_label: daq
       frag_type: @local::fragment_receiver.fragment_type
       num_adcs_to_show: 10   # Obviously this should be no more than ADC counts per fragment
@@ -62,7 +62,7 @@ physics:
    }
   }
 
-  a1: [ toyDump ]
+  a1: [ rootout ,Graficador ]
   p1: [ artdaqDemoBuildInfo ]
   e1: [ out1, rootout ]
   end_paths: [ a1 ]

@@ -48,7 +48,7 @@ namespace prueba {
 		PruebaFragmento::Metadato metadato_;
 		/*readout_buffer_ es un puntero que apunta al buffer
  		* que es llenado por el hardware interface*/
-		char* readout_buffer_;
+		uint8_t* readout_buffer_;
 		//tipo de fragmento
 		demo::FragmentType fragment_type_;
 	 
