@@ -28,7 +28,20 @@ simple_plugin(PruebaSimulator "generator"
   ${CETLIB}
 ${CETLIB_EXCEPT}
   )
-
+simple_plugin(PruebaV2Simulator "generator"
+  artdaq-dune_Generators_ToyHardwareInterface
+  artdaq-core-dune_Overlays
+  artdaq_Application
+  artdaq_DAQdata
+  artdaq-core_Utilities
+  artdaq-core_Data
+  artdaq-utilities_Plugins
+  canvas
+  ${FHICLCPP}
+  ${MESSAGEFACILITY_LIBS}
+  ${CETLIB}
+${CETLIB_EXCEPT}
+  )
 simple_plugin(AsciiSimulator "generator"
   artdaq-core-dune_Overlays
   artdaq_Application

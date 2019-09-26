@@ -49,6 +49,7 @@ simple_plugin(ToyDumpPrueba "module"
 simple_plugin(Graficador "module"
              artdaq-core_Data
 			  artdaq-core-dune_Overlays
+			  MF_MessageLogger	
 			  ${ROOT_GPAD}
 			  ${ROOT_HIST}
 			  ${ROOT_GUI}
