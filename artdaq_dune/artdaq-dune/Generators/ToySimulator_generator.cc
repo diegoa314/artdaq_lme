@@ -51,7 +51,8 @@ demo::ToySimulator::ToySimulator(fhicl::ParameterSet const& ps)
 		fragment_type_ = toFragmentType("TOY2");
 		break;
 	default:
-		throw cet::exception("ToySimulator") << "Unable to determine board type supplied by hardware";
+		//throw cet::exception("ToySimulator") << "Unable to determine board type supplied by hardware";
+		break;
 	}
 }
 

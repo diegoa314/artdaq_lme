@@ -6,11 +6,16 @@
 #include "art/Framework/Principal/Run.h"
 #include "art/Framework/Principal/SubRun.h"
 #include "canvas/Utilities/InputTag.h"
+
 #include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
 
+#include "artdaq-core/Data/ContainerFragment.hh"
 #include "artdaq-core/Data/Fragment.hh"
 #include "artdaq-core/Data/ContainerFragment.hh"
+
+#include "artdaq-dune/Generators/ToyHardwareInterface/PruebaV2HardwareInterface.hh"
+
 #include "artdaq-core-dune/Overlays/FragmentType.hh"
 #include "artdaq-core-dune/Overlays/PruebaFragmento.hh"
 #include "artdaq-core-dune/Overlays/PruebaV2Fragmento.hh"
@@ -25,7 +30,8 @@
 
 namespace prueba {
 
-class Graficador : public art::EDAnalyzer {
+class Graficador : public art::EDAnalyzer 
+{
 public:
   explicit Graficador(fhicl::ParameterSet const & ps);
   // The compiler-generated destructor is fine for non-base
@@ -69,6 +75,7 @@ prueba::Graficador::Graficador(fhicl::ParameterSet const & ps):
 	for (size_t i=0; i<datos_graph; i++) {
 		x_vect[i]=(double)i;
 	}
+	//decltype(PruebaV2HardwareInterface::adc_t) adc_t;
 	
 }	
 
@@ -88,57 +95,67 @@ void prueba::Graficador::beginRun(art::Run const& run) {
 	
 	grafico2.reset(new TGraph(datos_graph));
 	grafico2->SetTitle("Prueba V2 Graficador");
-	std::string name1="c2"; 
-	std::string title1="Grafico 2";
+	std::string name2="c2"; 
+	std::string title2="Grafico 2";
 	canvas2.reset(new TCanvas(name2.c_str(),title2.c_str(),600,550,largoCanvas,anchoCanvas));
 	canvas2->SetGrid();		
-	std::copy(x_vect.begin(),x_vect.end(),grafico1->GetX());
+	std::copy(x_vect.begin(),x_vect.end(),grafico2->GetX());
 
 }
 
 void prueba::Graficador::analyze(art::Event const& e) {
 		
 	artdaq::Fragments fragments;
-	art::Handle<artdaq::Fragments> label_fragment; //un smart pointer
-	e.getByLabel("daq","PRUEBA", "PRUEBAV2","ContainerPRUEBA","ContainerPRUEBAV2",label_fragment); //todos los fragmentos del evento con label daq o PRUEBA se guardan en label_fragment
-	for(auto frag:*label_fragment){
-		fragments.emplace_back(frag);//se guardan los punteros en fragments	
-	}
-	for(const auto& frag:fragments) {
-		FragmentType frag_type=static_cast<FragmentType>(frag.type());
-		switch (frag_type) {
-		case FragmentType::PRUEBA:
-			std::unique_ptr<prueba::PruebaFragmento> pruebafrag;
-			pruebafrag.reset(new prueba::PruebaFragmento(frag));
-			for (size_t i=0;i<datos_graph;i++) {
-				uint8_t val=(uint8_t)pruebafrag->dataBeginADCs()[i];
-				double tiempo=i; //modificar esto
-				grafico1->SetPoint(i,tiempo,val);
-			}			
-			canvas1->cd(); //se incializa el canvas
-			grafico1->Draw();
-			canvas1->Modified();
-			canvas1->Update();
-			break;
-		case FragmentType::PRUEBAV2:		
-			std::unique_ptr<prueba::PruebaV2Fragmento> pruebafrag;
-			pruebafrag.reset(new prueba::PruebaV2Fragmento(frag));
-			for (size_t i=0;i<datos_graph;i++) {
-				uint8_t val=(uint8_t)pruebafrag->dataBeginADCs()[i];
-				double tiempo=i; //modificar esto
-				grafico2->SetPoint(i,tiempo,val);
-			}			
-			canvas2->cd(); //se incializa el canvas
-			grafico2->Draw();
-			canvas2->Modified();
-			canvas2->Update();
-			break;
+	
+	std::vector<std::string> frag_type_labels{"PRUEBA", "PRUEBAV2"};	
+	for (auto label:frag_type_labels) {
+		art::Handle<artdaq::Fragments> frags_with_label; //un smart pointer	
+		e.getByLabel("daq",label,frags_with_label); //todos los fragmentos del evento con label daq o PRUEBA se guardan en label_fragment
+		for(auto frag:*frags_with_label){
+			fragments.emplace_back(frag);//se guardan los punteros en fragments	
 		}
-
+		for(const auto& frag:fragments) {
+			demo::FragmentType frag_type=static_cast<demo::FragmentType>(frag.type());
+			switch (frag_type) {
+			case demo::FragmentType::PRUEBA:
+				{
+				std::unique_ptr<prueba::PruebaFragmento> pruebafrag;
+				pruebafrag.reset(new prueba::PruebaFragmento(frag));
+				for (size_t i=0;i<datos_graph;i++) {
+					uint8_t val=(uint8_t)pruebafrag->dataBeginADCs()[i];
+					double tiempo=i; //modificar esto
+					grafico1->SetPoint(i,tiempo,val);
+				}			
+				canvas1->cd(); //se incializa el canvas
+				grafico1->Draw();
+				canvas1->Modified();
+				canvas1->Update();
+				}
+				break;
+			case demo::FragmentType::PRUEBAV2:		
+				{				
+				std::unique_ptr<prueba::PruebaV2Fragmento> pruebafrag2;
+				pruebafrag2.reset(new prueba::PruebaV2Fragmento(frag));
+				for (size_t i=0;i<datos_graph;i++) {
+					uint16_t val=(uint16_t)pruebafrag2->dataBeginADCs()[i];
+					double tiempo=i; //modificar esto
+					grafico2->SetPoint(i,tiempo,val);
+				}			
+				canvas2->cd(); //se incializa el canvas
+				grafico2->Draw();
+				canvas2->Modified();
+				canvas2->Update();
+				}				
+				break;
+			default:
+				throw cet::exception("Error in Graficador: unknown fragment type supplied");
+			}
+	
 		
+		}
 	}
 }
-DEFINE_ART_MODULE(Graficador)
+DEFINE_ART_MODULE(prueba::Graficador)
 
 
 

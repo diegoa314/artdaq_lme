@@ -36,13 +36,15 @@ void PruebaV2HardwareInterface::FillBuffer(adc_t* buffer, size_t* bytes_read)con
 		header->tam_evento=*bytes_read/sizeof(prueba::PruebaV2Fragmento::Header::dato_t);
 		adc_t* adc_read=reinterpret_cast<adc_t*>(header+1);
 		for(size_t i=0;i<nADCcounts_;i++) {
-			adc_read[i]=amplitud_*log(multiplicador_*i);
+			adc_read[i]=amplitud_*log(multiplicador_*(i+5));
+			//adc_read[i]=(adc_t)50;
 		}
 	}	
 }
 
 void PruebaV2HardwareInterface::AllocateBuffer(adc_t** buffer) const{
-	*buffer=reinterpret_cast<adc_t*>(new adc_t[sizeof(prueba::PruebaV2Fragmento::Header::dato_t)+nADCcounts_*sizeof(adc_t)]);
+	*buffer=reinterpret_cast<adc_t*>(new adc_t[sizeof(prueba::PruebaV2Fragmento::Header)+nADCcounts_*sizeof(adc_t)]);
+		
 
 }
 

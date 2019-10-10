@@ -49,8 +49,9 @@ bool prueba::PruebaV2Simulator::getNext_(artdaq::FragmentPtrs& frags) {
 	}	
 	std::size_t bytes_read=0;
 	hardware_interface_->FillBuffer(readout_buffer_, &bytes_read);
-	artdaq::FragmentPtr fragptr = artdaq::Fragment::FragmentBytes(bytes_read, ev_counter(), fragment_id(), fragment_type_, metadato_, timestamp_);
+	artdaq::FragmentPtr fragptr (artdaq::Fragment::FragmentBytes(bytes_read, ev_counter(), fragment_id(), fragment_type_, metadato_, timestamp_));
 	frags.emplace_back(std::move(fragptr));
+	memcpy(frags.back()->dataBeginBytes(),readout_buffer_, bytes_read);
 	artdaq::CommandableFragmentGenerator::ev_counter_inc();
 	timestamp_+=timestampScale_;
 	return true;

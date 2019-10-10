@@ -30,7 +30,7 @@ physics:
     }
 
     wf: {
-      module_type: Graficador
+      module_type: WFViewer
       fragment_ids: [0, 1, 2, 3]
       fragment_type_labels: [TOY1, TOY2, PRUEBA, PRUEBAV2]
       prescale: 1
@@ -100,7 +100,7 @@ source:
 
   commanderPluginType: xmlrpc
   dispatcherHost: localhost
-  dispatcherPort: 5269
+  dispatcherPort: 10107
 
   transfer_plugin: {
 
